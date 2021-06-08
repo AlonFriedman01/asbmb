@@ -3,7 +3,6 @@ install.packages(c("devtools", "tidyverse", "esquisse", "ggplot2", "esquisse", "
 library(tidyverse)
 library(esquisse)
 library(ggplot2)
-load("data/austin_flights_")
 esquisse::esquisser()
 
 
