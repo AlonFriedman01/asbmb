@@ -1,14 +1,14 @@
-#first example esquisse package
 install.packages(c("devtools", "tidyverse", "esquisse", "ggplot2", "esquisse", "igraph"))
 library(tidyverse)
 library(esquisse)
 library(ggplot2)
+mpg
 esquisse::esquisser()
 
 
 # second step
 #Use to download or update protein8k
-devtools::install_github("SimonLiles/protein8k", build_vignettes = TRUE)
+devtools::install_github("SimonLiles/protein8k", build_vignettes = FALSE)
 
 library(protein8k)
 
@@ -16,13 +16,13 @@ library(protein8k)
 #Load the data
 fileName <- "data/1aieH"
 
-my_protein <- read.pdb(fileName)
+my_protein <- p53_tetramerization
 
 #Generates a static 3D plot of a protein
 plot3D(my_protein)
 
 #Animate the protein structure spinning
-plot3D(my_protein, animated = TRUE, type = "p", groups = residue_name, 
+plot3D(my_protein, animated = TRUE, type = "p", groups = residue_name,
        image_width = 300, image_height = 300)
 
 #Generate a model of each plane of the protein structure
@@ -33,7 +33,7 @@ library(protein8k)
 
 #Loading the data
 #String representing the file path from the working directory to the report
-jsonListName <- "data/covid19_data/data_report.jsonl"
+jsonListName <- "data_report_small.jsonl"
 
 #Convert JSONL into a single large data frame
 report_df <- report_as_dataframe(fromJSONL(jsonListName))
@@ -49,14 +49,15 @@ report_clean_df$root <- "root"
 
 #Load libraries
 library(ggraph)
+install.packages("igraph")
 library(igraph)
 library(tidyverse)
 
 #Make list of nodes with frequencies for sizes
 nodes <- report_clean_df %>%
-  pivot_longer(cols = c(root, isolate_source, geo_Region, geo_Location), 
+  pivot_longer(cols = c(root, isolate_source, geo_Region, geo_Location),
                values_to = "label") %>%
-  count(label, name = "size") %>% 
+  count(label, name = "size") %>%
   rowid_to_column("id")
 
 #Adjust scale so that it is easier to read
@@ -73,7 +74,7 @@ hierarchy_list <- list()
 for(record in 1:nrow(report_clean_df)) {
   branch <- c(report_clean_df$root[record],
               report_clean_df$isolate_source[record],
-              report_clean_df$geo_Region[record], 
+              report_clean_df$geo_Region[record],
               report_clean_df$geo_Location[record])
   hierarchy_list[[record]] <- branch
 }
@@ -105,11 +106,11 @@ edges <- group_by(edges, from, to) %>%
 loc_graph <- graph_from_data_frame(d = edges, vertices = nodes, directed = TRUE)
 
 #Circular partition graph using ggraph and ggplot
-ggraph(loc_graph, 'partition', circular = TRUE) + 
+ggraph(loc_graph, 'partition', circular = TRUE) +
   geom_node_arc_bar(aes(fill = size, color = depth), size = 0.25) +
-  geom_node_text(aes(label = label), size = 2.5) + 
+  geom_node_text(aes(label = label), size = 2.5) +
   theme_void() +
-  theme(legend.position = "right") + 
+  theme(legend.position = "right") +
   scale_color_continuous(guide = "none") +
   scale_fill_viridis_c(direction = 1)
 
@@ -141,19 +142,21 @@ is_alluvia_form(edge_alvl)
 
 #Plot with ggalluvial
 #Color by source
-ggplot(edge_alvl, 
+ggplot(edge_alvl,
        aes(y = weight, axis1 = source, axis2 = region, axis3 = location)) +
   geom_alluvium(aes(fill = source), width = 0, knot.pos = 0, reverse = FALSE) +
-  guides(fill = FALSE) + 
-  geom_stratum(width = 1/8, reverse = FALSE) + 
-  geom_text(stat = "stratum", aes(label = after_stat(stratum)), reverse = FALSE, 
-            size = 2) 
+  guides(fill = FALSE) +
+  geom_stratum(width = 1/8, reverse = FALSE) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), reverse = FALSE,
+            size = 2)
 
 #Color by region
-ggplot(edge_alvl, 
+ggplot(edge_alvl,
        aes(y = weight, axis1 = source, axis2 = region, axis3 = location)) +
   geom_alluvium(aes(fill = region), width = 0, knot.pos = 0, reverse = FALSE) +
-  guides(fill = FALSE) + 
-  geom_stratum(width = 1/8, reverse = FALSE) + 
-  geom_text(stat = "stratum", aes(label = after_stat(stratum)), reverse = FALSE, 
-            size = 2) 
+  guides(fill = FALSE) +
+  geom_stratum(width = 1/8, reverse = FALSE) +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), reverse = FALSE,
+            size = 2)
+
+
