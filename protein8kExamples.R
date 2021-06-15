@@ -49,7 +49,6 @@ report_clean_df$root <- "root"
 
 #Load libraries
 library(ggraph)
-install.packages("igraph")
 library(igraph)
 library(tidyverse)
 
